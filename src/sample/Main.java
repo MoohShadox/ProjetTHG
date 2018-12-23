@@ -8,7 +8,7 @@ public class Main {
     private LinkedList<Integer> coeur;
 
     /*TODO: Methode pour générer de manière aléatoire un graphe.
-    Le principe de cet algoriyhme et de générer des chemins
+    Le principe de cet algorithme est de générer des chemins
     */
 
     public static HashSet<Tuple> generergraphe(int ordre, float dansité){
@@ -86,8 +86,6 @@ public class Main {
                 le somet de debut devient le suivant afin de continuer a générer un chemin
                  */
                 debut = svt;
-
-
             }
             /*
             quand on termine de générer un chemin et que la proprétée de densité n'est toujours pas vérifiée
@@ -145,6 +143,7 @@ public class Main {
     /*
     methode retournant un tableau de liste ou l'indice est le sommet et l'element est une liste des suivants de ce sommet
      */
+
     public static LinkedList<Integer>[] suivants(HashSet<Tuple> L, int ordre){
         /*
         allocation du tableau de liste qu'on retournera plus tard
@@ -169,9 +168,11 @@ public class Main {
          */
         return M;
     }
+
     /*
     methode retournant tout les predecesseurs d'un sommet a
      */
+
     public static LinkedList<Integer> getpredecesseurs(HashSet<Tuple> L,int a){
         /*
         declaration et allocation de la liste des predesseurs que nous allons retourner
@@ -207,11 +208,11 @@ public class Main {
         }
         return A;
     }
+
     /*
     TODO: Algorithme de décomposition en niveaux
     retourne un tableau ou l'indice est le sommet et son contenu T[sommet] est son niveau
      */
-
     public static int[] niveaux(HashSet<Tuple> L,int ordre){
         /*
         declaration et allocation du tableau que nous allons retourner
@@ -286,6 +287,8 @@ public class Main {
          */
         return M;
     }
+
+
     /*
     prend en entré un tableau de niveau en fonction du sommet et retourne une liste de sommets par niveaux 
          */
@@ -300,10 +303,11 @@ public class Main {
 
         return M;
     }
+
     /*
     TODO: Algorithme qui trouve le noyeau d'un graphe
     retourne une liste de sommets
-    le principe est siple, tout les puits sont des elements du noyeau, on les ajoute ensuite eux et leurs precedents dans un buffer
+    le principe est simple, tout les puits sont des elements du noyeau, on les ajoute ensuite eux et leurs precedents dans un buffer
     ensuite on va parcourir les autres niveau, pour chaque niveau, tout les sommets du niveau qui ne sont pas
     dans buffer deviennent elements du noyeau ceux ci sont ensuite ajoutés a buffer ainsi que leurs precedents
      */
