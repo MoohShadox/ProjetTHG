@@ -1,27 +1,39 @@
 package sample;
 
-import java.lang.reflect.Array;
+import sample.Tuple;
+
 import java.util.*;
+
 
 public class Main {
 
     private LinkedList<Integer> coeur;
 
     /*TODO: Methode pour générer de manière aléatoire un graphe.
-    Le principe de cet algorithme est de générer des chemins
+    Le principe de cet algoriyhme et de générer des chemins
     */
+
+    private static HashSet<Integer>[] MAJ(HashSet<Integer>[] M, int a, int ordre, HashSet<Integer> H){
+        HashSet<Integer> Hash[]=M;
+        for (int i=0;i<ordre;i++){
+            if(Hash[i].contains(a)){
+                Hash[i].addAll(H);
+            }
+        }
+        return Hash;
+    }
+
 
     public static HashSet<Tuple> generergraphe(int ordre, float dansité){
         //j'alloue le graphe:
         HashSet<Tuple> aleagraphe = new HashSet<Tuple>();
-        LinkedList<Integer> L = new LinkedList<>();
         /*J'alloue un tableau ee liste ou chaque indice est un sommet du graphe
         et M[element] est la liste X, ou quelque soit s appartenant a X, il existe
         un chemain entre s et element.
          */
-        LinkedList<Integer> M[] = new LinkedList[ordre];
+        HashSet<Integer> M[] = new HashSet[ordre];
         for(int i=0; i<ordre; i++){
-            M[i]= new LinkedList<>();
+            M[i]= new HashSet<>();
         }
         Random rand = new Random();
         /*
@@ -37,20 +49,30 @@ public class Main {
         un compteur simple que j"utiliserais plus tard
          */
         int j;
+            /*
+            pour la densite
+             */
+        int nb_max = ordre*(ordre-1)/2;
         /*
         nous procéderons tant que le nombre d'arrêtes sur l'ordre ne dépasse pas la densité voulue
          */
-        while ( (arretes+1f)/ordre < dansité){
+        int taille = aleagraphe.size();
+
+        while ( (arretes+1f)/nb_max < dansité){
             /*
             je génère aléatoirement un sommet debut
              */
             debut = rand.nextInt(ordre);
+            boolean chfin=true;
+            if(M[debut].size()!=ordre-1){
+                chfin=false;
+            }
             /*
             dans cette boucle il s'agira de créer un chemain allant de debut vers des suivants,
             on utilisera une probabilité de 0,7 pour continuer a générer le chemain et on s'arretera
             biensur dans le cas ou le nombre d'arrête sur l'ordre dépasse la densité
              */
-            while(rand.nextInt(10)<7 && (arretes+1f)/ordre < dansité){
+            while(rand.nextInt(10)<7 && (arretes+1f)/nb_max < dansité & !chfin){
                 /*
                 je génère un suivant tant que le suivant est égale a au début ou que la matrice de début
                 contient ce suivant. on s'arretera quand aucune des deux conditions n'est vérifiée car
@@ -58,10 +80,13 @@ public class Main {
                 aussi ce suivant doit être différent des elements qui mènenet vers début sinon on générera
                 un circuit.
                  */
+                //System.out.print("avant! \n");
+                //System.out.print("la taille est;" + M[debut].size() + "\n");
                 svt = rand.nextInt(ordre);
                 while(svt == debut || M[debut].contains(svt)){
                     svt = rand.nextInt(ordre);
                 }
+                // System.out.print(M[debut]);
                 System.out.print(debut + " " + svt +"\n" );
                 /*
                 une fois avoir trouvé un suivant valide, on ajoute un arc allant de debut vers suivant a notre grapje
@@ -70,22 +95,32 @@ public class Main {
                 /*
                 bien sur il faut incrémenter le nombre d'arrêtes
                  */
-                arretes++;
+                if(taille<aleagraphe.size()){
+                    arretes++;
+                    taille=aleagraphe.size();
+                }
                 /*
                 il s'agira ensuite d'actualiser la liste des elements ayant un chemain menant vers ce suivant la procedure
                 est simple, il s'agit déja d'ajouter debut et ensuite d'ajouter tout le sommets menant vers debuts car
                 ceux ci mènenent maintenant aussi a suivant
                  */
-                j= 0;
                 M[svt].add(debut);
-                while(  j<M[debut].size()){
-                    M[svt].add(M[debut].get(j));
-                    j++;
+                Iterator<Integer> iterator = M[debut].iterator();
+                while( iterator.hasNext()){
+                    M[svt].add(iterator.next());
                 }
+                M=MAJ(M,svt,ordre,M[svt]);
+
+
                 /*
                 le somet de debut devient le suivant afin de continuer a générer un chemin
                  */
                 debut = svt;
+                chfin=true;
+                if(M[debut].size()!=ordre-1){
+                    chfin=false;
+                }
+
             }
             /*
             quand on termine de générer un chemin et que la proprétée de densité n'est toujours pas vérifiée
@@ -115,11 +150,11 @@ public class Main {
     /*
     Methode permetant d'extraire les sommets sources d'un graphe
      */
-    public static LinkedList<Integer> sources(HashSet<Tuple> L, int ordre){
+    public static HashSet<Integer> sources(HashSet<Tuple> L, int ordre){
         /*
         déclaration, allocation et remplissage de la liste des sommets
          */
-        LinkedList<Integer> liste = new LinkedList<>();
+        HashSet<Integer> liste = new HashSet<>();
         for(int i=0;i<ordre;i++){
             liste.add(i);
         }
@@ -143,14 +178,13 @@ public class Main {
     /*
     methode retournant un tableau de liste ou l'indice est le sommet et l'element est une liste des suivants de ce sommet
      */
-
-    public static LinkedList<Integer>[] suivants(HashSet<Tuple> L, int ordre){
+    public static HashSet<Integer>[] suivants(HashSet<Tuple> L, int ordre){
         /*
         allocation du tableau de liste qu'on retournera plus tard
          */
-        LinkedList<Integer> M[] = new LinkedList[ordre];
+        HashSet<Integer> M[] = new HashSet[ordre];
         for(int i=0; i<ordre; i++){
-            M[i]= new LinkedList<>();
+            M[i]= new HashSet<>();
 
         }
         Iterator<Tuple> t = L.iterator();
@@ -168,16 +202,14 @@ public class Main {
          */
         return M;
     }
-
     /*
     methode retournant tout les predecesseurs d'un sommet a
      */
-
-    public static LinkedList<Integer> getpredecesseurs(HashSet<Tuple> L,int a){
+    public static HashSet<Integer> getpredecesseurs(HashSet<Tuple> L,int a){
         /*
         declaration et allocation de la liste des predesseurs que nous allons retourner
          */
-        LinkedList<Integer> liste = new LinkedList<>();
+        HashSet<Integer> liste = new HashSet<>();
         Iterator<Tuple> i = L.iterator();
         Tuple k;
         /*
@@ -194,11 +226,11 @@ public class Main {
     /*
     methode retournant le tableau des predesseurs des elements de la liste "list"
      */
-    public static LinkedList<Integer> getlistpredecesseurs(HashSet<Tuple> L,LinkedList<Integer> list){
+    public static HashSet<Integer> getlistpredecesseurs(HashSet<Tuple> L,HashSet<Integer> list){
         /*
         allocation de la liste que nous allons retourner
          */
-        LinkedList<Integer> A= new LinkedList<>();
+        HashSet<Integer> A= new HashSet<>();
         Iterator<Integer> it = list.iterator();
         /*
         pour chaque element de la liste "list" ajouter ses predesseurs dans la liste
@@ -208,11 +240,11 @@ public class Main {
         }
         return A;
     }
-
     /*
     TODO: Algorithme de décomposition en niveaux
     retourne un tableau ou l'indice est le sommet et son contenu T[sommet] est son niveau
      */
+
     public static int[] niveaux(HashSet<Tuple> L,int ordre){
         /*
         declaration et allocation du tableau que nous allons retourner
@@ -221,15 +253,15 @@ public class Main {
         /*
         declaration de liste des debuts qui contient initalement les sources du graphe
          */
-        LinkedList<Integer> debuts = sources(L, ordre);
+        HashSet<Integer> debuts = sources(L, ordre);
         /*
          Declaration du tableau de liste des suivatns que nous avons fait plutot
          */
-        LinkedList<Integer>[] suivants = suivants(L, ordre);
+        HashSet<Integer>[] suivants = suivants(L, ordre);
         /*
         allocation d'un buffer de listes de debuts
          */
-        LinkedList<Integer> nouvdeb = new LinkedList<>();
+        HashSet<Integer> nouvdeb = new HashSet<>();
         /*
         le buffer reçoit les debuts actuels
          */
@@ -253,6 +285,7 @@ public class Main {
             while (to.hasNext()){
                 opo= to.next();
                 Iterator<Integer> tt = suivants[opo].iterator();
+                // System.out.print("et un suivant! \n");
                 /*
                 parcour des suivants du debut "opo"
                  */
@@ -287,15 +320,13 @@ public class Main {
          */
         return M;
     }
-
-
     /*
-    prend en entré un tableau de niveau en fonction du sommet et retourne une liste de sommets par niveaux 
+    prend en entré un tableau de niveau en fonction du sommet et retourne une liste de sommets par niveaux
          */
-    public static LinkedList<Integer>[] Tab_to_List(int tableau[],int ordre){
-        LinkedList<Integer> M[] = new LinkedList[ordre];
+    public static HashSet<Integer>[] Tab_to_List(int tableau[],int ordre){
+        HashSet<Integer> M[] = new HashSet[ordre];
         for(int i=0; i<ordre; i++){
-            M[i]= new LinkedList<>();
+            M[i]= new HashSet<>();
         }
         for (int j=0;j<ordre;j++){
             M[tableau[j]].add(j);
@@ -303,35 +334,34 @@ public class Main {
 
         return M;
     }
-
     /*
     TODO: Algorithme qui trouve le noyeau d'un graphe
     retourne une liste de sommets
-    le principe est simple, tout les puits sont des elements du noyeau, on les ajoute ensuite eux et leurs precedents dans un buffer
+    le principe est siple, tout les puits sont des elements du noyeau, on les ajoute ensuite eux et leurs precedents dans un buffer
     ensuite on va parcourir les autres niveau, pour chaque niveau, tout les sommets du niveau qui ne sont pas
     dans buffer deviennent elements du noyeau ceux ci sont ensuite ajoutés a buffer ainsi que leurs precedents
      */
-    public static LinkedList<Integer> noyeau(HashSet<Tuple> L,int ordre){
+    public static HashSet<Integer> noyeau(HashSet<Tuple> L,int ordre){
         /*
         declaration de la liste debuts qui contiendra les elements dont on calculera les precedents
          */
-        LinkedList<Integer> debuts = new LinkedList<>();
+        HashSet<Integer> debuts = new HashSet<>();
         /*
         suiivants contiendra les elements du niveau courent qui ne sont pas dans buffer
          */
-        LinkedList<Integer> suivants = new LinkedList<>();
+        HashSet<Integer> suivants = new HashSet<>();
         /*
         liste contient la liste des elements du noyeau que nous retournerons plus tard
          */
-        LinkedList<Integer> liste = new LinkedList<>();
+        HashSet<Integer> liste = new HashSet<>();
         /*
         contient le tableau des somets pour chaque niveau
          */
-        LinkedList<Integer> tab[] =Tab_to_List(niveaux(L, ordre ), ordre);
+        HashSet<Integer> tab[] =Tab_to_List(niveaux(L, ordre ), ordre);
         /*
         buffer contiendra tout les somets parcourus
          */
-        LinkedList<Integer> buffer= new LinkedList<>();
+        HashSet<Integer> buffer= new HashSet<>();
         /*
         on initialise i a ordre-1 car nous allons parcourir le graphe depuis les puits jusqu'aux sources
          */
@@ -403,29 +433,29 @@ public class Main {
     }
 
     public static void main(String[] arg) {
-         HashSet<Tuple> Graphe;
+        HashSet<Tuple> Graphe;
          /*
          generation du graphe et affichage de celui-ci
           */
-        Graphe = Main.generergraphe(25,1f);
-        System.out.print("le graphe d'ordre " + 25 + ":\n" + Graphe.size() + "\n");
+        Graphe = Main.generergraphe(100,1f);
+        System.out.print("le graphe d'ordre " + 15 + ":\n" + Graphe.size() + "\n");
         /*
         affichage des sources du graphe
          */
-        System.out.print("les slurces: " + sources(Graphe, 25) + "\n");
+        //System.out.print("les slurces: " + sources(Graphe, 25) + "\n");
         /*
         décomposition en niveau du graphe et affichage de ces niveaux
          */
-        int tab[]=niveaux(Graphe, 25 );
-        LinkedList<Integer> tob[] =Tab_to_List(tab, 25);
-        for (int j=0;j<25;j++){
-            System.out.print("niveau " + j + ": " + tob[j] + "\n");
-        }
+        // System.out.print("1: " + System.currentTimeMillis());
+        long a = System.currentTimeMillis();
+        int tab[]=niveaux(Graphe, 100 );
+        System.out.print("\n temp: " + (System.currentTimeMillis() - a) + "\n");
         /*
         affichage du noyeau du graphe
          */
-        System.out.print(noyeau(Graphe, 25));
-
+        a = System.currentTimeMillis();
+        System.out.print(noyeau(Graphe, 100));
+        System.out.print("\n temp: " + (System.currentTimeMillis() - a) + "\n");
 
     }
 }

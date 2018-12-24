@@ -29,7 +29,7 @@ public class Core_Calculator {
         return 0;
     }
 
-    
+
 
     static HashSet<Tuple> randomizedGraph(int ordre, float densite){
         HashSet<Tuple> tuples = new HashSet<>();
@@ -100,6 +100,85 @@ public class Core_Calculator {
             i--;
         }
         return liste;
+    }
+
+
+    public int[] decomposerNiveauxSossi(){
+        HashSet<Tuple> L = G.getArcs();
+        int ordre = G.getOrdre();
+        /*
+        declaration et allocation du tableau que nous allons retourner
+         */
+        int M[] = new int[ordre];
+        /*
+        declaration de liste des debuts qui contient initalement les sources du graphe
+         */
+        HashSet<Integer> debuts = G.getSources();
+        /*
+         Declaration du tableau de liste des suivatns que nous avons fait plutot
+         */
+        HashSet<Integer>[] suivants = G.getListeTableauSuccesseurs();
+        /*
+        allocation d'un buffer de listes de debuts
+         */
+        HashSet<Integer> nouvdeb = new HashSet<>();
+        /*
+        le buffer reçoit les debuts actuels
+         */
+        nouvdeb.addAll(debuts);
+        Iterator<Integer> to;
+        /*
+        déclarations de variables qui vont nous aider lors du traitement
+         */
+        int j=1;
+        int opo;
+        int lr=0;
+        int kl;
+        /*
+        nous allons effectuer cette action ordre-1 fois car on sait que la plus grand niveau est inferieur ou egal a ordre - 1
+         */
+        while ( lr<ordre){
+            to=debuts.iterator();
+            /*
+            on parcoure la liste des debuts et pour chaque debut, tout ses suivant recoivent j, un entier qui s'incrémente de 1 a chaque fois
+             */
+            while (to.hasNext()){
+                opo= to.next();
+                Iterator<Integer> tt = suivants[opo].iterator();
+                // System.out.print("et un suivant! \n");
+                /*
+                parcour des suivants du debut "opo"
+                 */
+                while (tt.hasNext()){
+                    kl=tt.next();
+                    /*
+                    on ajoute a nouvdeb le suivant "kl" afin qu'il devienne un debut lors de ka prochaine itération
+                     */
+                    nouvdeb.add(kl);
+                    /*
+                    on actualise le niveau du suivant "kl" a j
+                     */
+                    M[kl] = j;
+                }
+
+            }
+            /*
+            on vide debuts pour le remplacer par nouveaux debuts et on vide ensuite nouvdeb
+             */
+            debuts.clear();
+            debuts.addAll(nouvdeb);
+            nouvdeb.clear();
+            /*
+            on icrémente j qui symbolise le niveau actuel
+             */
+            j++;
+            lr++;
+
+        }
+        /*
+        on retourne enfin le tableau des niveaux
+         */
+        return M;
     }
 
 

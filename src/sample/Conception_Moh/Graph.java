@@ -9,8 +9,22 @@ public abstract class Graph {
     protected int ordre = 0;
     protected HashSet<Tuple> arcs;
 
+    public Graph(int ordre,HashSet<Tuple> arcs){
+        this.ordre = ordre;
+        setArcs(arcs);
+    }
+
+
+    public Graph(int ordre,float densite){
+        this.ordre = ordre;
+        setDensite(densite);
+    }
+
     public abstract boolean isConnected(int i,int j);
     public abstract void setStructure();
+
+    public abstract HashSet<Integer> getSources();
+    public abstract HashSet<Integer> getSuccesseurs(int sommet);
 
     public  Collection<Integer> getPredecesseur(int a){
         HashSet<Integer> liste = new HashSet<>();
@@ -23,6 +37,13 @@ public abstract class Graph {
             }
         }
         return liste;
+    }
+
+    public HashSet<Integer>[] getListeTableauSuccesseurs(){
+        HashSet<Integer>[] H = new HashSet[ordre];
+
+
+        return H;
     }
 
     public HashSet<Integer> getListPredecesseurs(HashSet<Integer> i){
@@ -56,16 +77,7 @@ public abstract class Graph {
 
 
 
-    public Graph(int ordre,HashSet<Tuple> arcs){
-        this.ordre = ordre;
-        setArcs(arcs);
-    }
 
-
-    public Graph(int ordre,float densite){
-        this.ordre = ordre;
-        setDensite(densite);
-    }
 
 
 
