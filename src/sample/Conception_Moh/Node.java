@@ -28,6 +28,20 @@ public class Node {
         }
     }
 
+    public LinkedList<Node> getLiens_sortants() {
+        return liens_sortants;
+    }
+
+    public LinkedList<Node> getLiens_entrants() {
+        return liens_entrants;
+    }
+
+    public boolean checkExistanceOut(int number){
+        for (Node n:liens_sortants)
+            if(n.number==number)
+                return true;
+        return false;
+    }
 
     public void deconnecter(int n) {
         liens_entrants.removeIf(node -> node.number == n);
@@ -38,15 +52,9 @@ public class Node {
         return number;
     }
 
-    //TODO Optimisation temps machine de ceci en utilisant un StringBuilder
     @Override
     public String toString() {
-        String str = "Node"+number+" ";
-        /*String str = "Noeud nomme " + number + " a pour precedents : ";
-        for(Node n:liens_entrants){
-            str += n.number + " , ";
-        }*/
-        return str;
+        return "Node"+number+" ";
     }
 
     public boolean isSource(){

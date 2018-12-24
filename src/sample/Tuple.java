@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class Tuple {
+public class Tuple implements Comparable<Tuple> {
     private int tableau[];
 
     public Tuple(int a, int b) {
@@ -37,8 +37,24 @@ public class Tuple {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        Tuple t = (Tuple) obj;
+        return (t.tableau[0]==this.tableau[0] && t.tableau[1]==this.tableau[1]);
+    }
+
+    @Override
     public String toString() {
         return "Tuple{" + this.tableau[0] + ',' + this.tableau[1] +
                 "} \n";
     }
+
+    @Override
+    public int compareTo(Tuple o) {
+        if(this.equals(o))
+            return 0;
+        else if(this.tableau[0] > o.tableau[0])
+            return 1;
+        return -1;
+    }
+
 }
