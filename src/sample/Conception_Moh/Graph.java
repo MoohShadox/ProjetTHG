@@ -4,7 +4,7 @@ import sample.Tuple;
 
 import java.util.*;
 
-public abstract class Graph {
+public class Graph {
 
     protected int ordre = 0;
     protected HashSet<Tuple> arcs;
@@ -20,11 +20,25 @@ public abstract class Graph {
         setDensite(densite);
     }
 
-    public abstract boolean isConnected(int i,int j);
-    public abstract void setStructure();
+    public boolean isConnected(int i,int j){
+        //TODO Definir is connected dans le cadre d'un tuple
+        return false;
+    }
 
-    public abstract HashSet<Integer> getSources();
-    public abstract HashSet<Integer> getSuccesseurs(int sommet);
+    public void setStructure(){
+
+    }
+
+    public HashSet<Integer> getSources(){
+        //TODO Definir une methode qui retourne les sources
+        return null;
+    }
+
+
+    public HashSet<Integer> getSuccesseurs(int sommet){
+        //TODO definir une methode qui retourne les successeurs
+        return null;
+    }
 
     public  Collection<Integer> getPredecesseur(int a){
         HashSet<Integer> liste = new HashSet<>();
@@ -41,8 +55,7 @@ public abstract class Graph {
 
     public HashSet<Integer>[] getListeTableauSuccesseurs(){
         HashSet<Integer>[] H = new HashSet[ordre];
-
-
+        //TODO Definir une methode générale permettant en exploitant la methode que retourne les successeurs de construire la liste de Tableaux de successeurs
         return H;
     }
 
@@ -69,6 +82,10 @@ public abstract class Graph {
     public void setArcs(HashSet<Tuple> arcs){
         this.arcs = arcs;
 
+    }
+
+    public void setOrdre(int ordre) {
+        this.ordre = ordre;
     }
 
     public void setDensite(float densite){

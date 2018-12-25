@@ -27,6 +27,17 @@ public class Graphe_Dense extends Graph{
         getMatrice_adjacence();
     }
 
+    public HashSet<Integer> getSources(){
+        //TODO Definir une methode qui retourne les sources en utilisant une matrice
+        return null;
+    }
+
+
+    public HashSet<Integer> getSuccesseurs(int sommet){
+        //TODO definir une methode qui retourne les successeurs en utilisant une matrice
+        return null;
+    }
+
     @Override
     public Collection<Integer> getPredecesseur(int n) {
         LinkedList<Integer> C = new LinkedList<>();

@@ -13,7 +13,7 @@ public class Node {
     private LinkedList<Node> liens_entrants = new LinkedList<>();
     private int number;
 
-    public Node(int number,Graph graphe){
+    public Node(int number,Graphe_Visualisable graphe){
         HashSet<Tuple> arcs= graphe.getArcs();
         graphe.addNoeud(this,number);
         this.number = number;

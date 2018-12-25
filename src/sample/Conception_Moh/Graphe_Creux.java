@@ -25,6 +25,20 @@ public class Graphe_Creux extends Graph {
         return false;
     }
 
+    public HashSet<Integer> getSources(){
+        //TODO Definir une methode qui retourne les sources en utilisant une liste
+        return null;
+    }
+
+
+    public HashSet<Integer> getSuccesseurs(int sommet){
+        //TODO definir une methode qui retourne les successeurs en utilisant une liste
+        return null;
+    }
+
+
+
+
     @Override
     public void setStructure() {
         PS = new int[ordre+1];

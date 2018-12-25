@@ -4,8 +4,15 @@ import javafx.util.Callback;
 import sample.Conception_Moh.Node;
 import sample.Tuple;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Core_Calculator {
 
@@ -223,6 +230,24 @@ public class Core_Calculator {
     }
 
 
+    public void writeGraphe(){
+        Path source = Paths.get("graph.txt");
+        try ( BufferedWriter writer = Files.newBufferedWriter(source, StandardCharsets.UTF_8) )  {
+            writer.write(G.getOrdre()+"");
+            writer.newLine();
+            for(Tuple t:G.getArcs()){
+                writer.write(""+ t.getTableau()[0]);
+                writer.write(",");
+                writer.write("" + t.getTableau()[1]);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
     //Test Unitaire
     public static void main(String[] str){
         HashSet<Tuple> t = new HashSet<>();
@@ -247,11 +272,11 @@ public class Core_Calculator {
 
         }
         System.out.println("La structure contiens des lors " + G1.ordre*G1.ordre + " cellules ");*/
-        Graph G1 = new Graphe_Creux(7,t);
-        G1.setStructure();
-        System.out.println(G1.getPredecesseur(4));
+        GraphBuilder GB = new GraphBuilder(10);
+        Graph G = GB.fromFolder().buildFromTuples();
+        /*System.out.println(G1.getPredecesseur(4));
         Core_Calculator CC = new Core_Calculator(G1);
         CC.applyDecomposition();
-        System.out.println(CC.noyeau());
+        System.out.println(CC.noyeau());*/
     }
 }
